@@ -12,6 +12,7 @@ var commands = {
 	CLEAN: [0x87, 1],
 	MAX: [0x88, 1],
 	DRIVE: [0x89, 5],
+	DRIVE_PWM: [0x92, 5],
 	MOTORS: [0x8A, 2],
 	LEDS: [0x8B, 4],
 	SONG: [0x8C, 35],
@@ -96,6 +97,18 @@ function encode_cmd(obj) {
 		} else {
 			buf.writeInt16BE(direction, pos); pos += 2;
 		}
+		break;
+	case ('DRIVE_PWM'):
+		var right_pwm = data[0];
+		assert(-255 <= right_pwm <= 255,
+		    'right PWM value is valid');
+		    
+		var left_pwm = data[1];
+		assert(-255 <= left_pwm <= 255,
+		    'left PWM value is valid');
+		    
+		buf.writeInt16BE(right_pwm, pos); pos += 2;
+		buf.writeInt16BE(left_pwm, pos); pos += 2;
 		break;
 	case ('MOTORS'):
 		// data[0] - data[2] are side brush, vacuum, and main brush
